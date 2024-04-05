@@ -4,7 +4,8 @@
       Criar nova tarefa
     </button>
   </div>
-  <form @showState class="formulario ff-prompt" [formGroup]="formulario" *ngIf="formAberto">
+  <form @shownState [@shakeAnimation]="formulario.value" [@formButton]="formulario.valid ? 'valid' : 'invalid'"
+    class="formulario ff-prompt" [formGroup]="formulario" *ngIf="formAberto">
     <label for="descricao">Descrição da tarefa</label>
     <input required type="text" formControlName="descricao" placeholder="Digite a tarefa"
       [ngClass]="campoValidado('descricao')">
@@ -12,7 +13,7 @@
     </app-mensagem>
     <label for="prioridade">Prioridade</label>
     <select required formControlName="prioridade" [ngClass]="campoValidado('prioridade')">
-      <option disabled value="">Selecione</option>
+      <option value="">Selecione</option>
       <option value="Alta">Alta</option>
       <option value="Normal">Normal</option>
       <option value="Baixa">Baixa</option>
@@ -21,7 +22,7 @@
     </app-mensagem>
     <label for="categoria">Categoria</label>
     <select required formControlName="categoria" [ngClass]="campoValidado('categoria')">
-      <option disabled value="">Selecione</option>
+      <option value="">Selecione</option>
       <option value="Casa">Casa</option>
       <option value="Trabalho">Trabalho</option>
       <option value="Estudos">Estudos</option>
@@ -29,7 +30,8 @@
     <app-mensagem *ngIf="!validado" mensagemValidacao="Escolha a categoria">
     </app-mensagem>
     <div class="botoes-form">
-      <button (click)="salvarTarefa()" class="botao-form" [ngClass]="habilitarBotao()" [disabled]="!formulario.valid">
+      <button id="botao-salvar" (click)="salvarTarefa()" class="botao-form" [ngClass]="habilitarBotao()"
+        [disabled]="!formulario.valid">
         Salvar
       </button>
       <button (click)="cancelar()" class="botao-form botao-cancelar">
@@ -45,13 +47,14 @@
       alt="Ilustração de um ambiente com mesa, computador, quadro e um vaso com planta">
   </div>
   <div class="busca">
-    <p class="ff-prompt">procurando o que fazer?</p>
-    <input type="search" name="campoBusca" id="campoBusca" placeholder="busque por uma tarefa" [(ngModel)]="campoBusca"
+    <p class="ff-prompt">Procurando o que fazer?</p>
+    <input id="campo-busca" type="search" placeholder="Busque por uma tarefa" [(ngModel)]="campoBusca"
       (keyup)="filtrarTarefasPorDescricao(campoBusca)">
   </div>
-  <div *ngIf="tarefasFiltradas.length > 0, else semTarefas">
-    <div class="lista-tarefas card-{{ tarefa.categoria }}" *ngFor="let tarefa of tarefasFiltradas; let i = index"
-      (mouseover)="indexTarefa = i" [@highlightedState]="indexTarefa === i ? 'highlighted' : 'default'">
+  <div @listState *ngIf="tarefasFiltradas.length > 0, else semTarefas">
+    <div @filterAnimation class="lista-tarefas card-{{ tarefa.categoria }}"
+      *ngFor="let tarefa of tarefasFiltradas; let i = index" (mouseover)="indexTarefa = i"
+      [@highlightedState]="indexTarefa === i ? 'highlighted' : 'default'">
       <div class="info-card">
         <p class="categoria-tarefa categoria-{{ tarefa.categoria }}">
           <img src="assets/icones/{{ tarefa.categoria }}.png" alt="Ícone de {{ tarefa.categoria }}">
@@ -62,7 +65,7 @@
         </p>
         <p class="status-tarefa">
           <button [ngClass]="(tarefa.statusFinalizado == true) ? 'icone-checked' : 'icone-unchecked'"
-            (click)="finalizarTarefa(tarefa.id);" [@checkButton]="(tarefa.id === id ? 'checked' : 'unchecked')">
+            (click)="finalizarTarefa(tarefa)" [@checkButton]="tarefa.id === id && estadoBotao">
           </button>
         </p>
       </div>
